@@ -56,8 +56,8 @@ export const site = {
     email: "alifatehi1379@gmail.com",
     /** TODO: fill in your real handles. */
     telegram: "https://t.me/scgtp1",
-    github: "https://github.com/alifatehi",
-    linkedin: "https://www.linkedin.com/in/alifatehi",
+    github: "https://github.com/Ali9832",
+    linkedin: "https://www.linkedin.com/in/alifatehi1380/",
   },
   /** Used by the Person JSON-LD `knowsAbout` field. */
   knowsAbout: [

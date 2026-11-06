@@ -34,7 +34,7 @@ export function personJsonLd(locale: Locale): WithContext<Person> {
     email: `mailto:${site.author.email}`,
     jobTitle: dict.meta.role,
     description: dict.meta.description,
-    image: absoluteUrl(ogImagePath(locale, "")),
+    image: absoluteUrl("/media/profile-ali-fatehi.webp"),
     knowsAbout: [...site.knowsAbout],
     address: {
       "@type": "PostalAddress",
