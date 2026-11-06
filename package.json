@@ -1,0 +1,58 @@
+{
+  "name": "alifatehi-site",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "tsx scripts/validate-content.ts && tsx scripts/export-form-messages.ts",
+    "build": "next build",
+    "postbuild": "tsx scripts/generate-og.ts && tsx scripts/prepare-standalone.ts",
+    "start": "HOSTNAME=0.0.0.0 node .next/standalone/server.js",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "content:check": "tsx scripts/validate-content.ts",
+    "og": "tsx scripts/generate-og.ts",
+    "media": "tsx scripts/optimize-images.ts",
+    "fonts": "node scripts/fetch-fonts.mjs",
+    "deploy": "bash scripts/deploy.sh"
+  },
+  "dependencies": {
+    "gray-matter": "4.0.3",
+    "next": "16.3.5",
+    "next-mdx-remote": "5.0.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "rehype-autolink-headings": "7.1.0",
+    "rehype-pretty-code": "^0.14.1",
+    "rehype-slug": "6.0.0",
+    "remark-gfm": "4.0.1",
+    "server-only": "^0.0.1",
+    "shiki": "^3.13.0",
+    "tsx": "4.20.5",
+    "@resvg/resvg-js": "2.6.2",
+    "@tailwindcss/postcss": "4.1.13",
+    "postcss": "8.5.6",
+    "sharp": "0.34.3",
+    "tailwindcss": "4.1.13",
+    "typescript": "5.9.2",
+    "vazirmatn": "^33.0.3",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.36.0",
+    "@fontsource-variable/inter": "5.2.8",
+    "@fontsource-variable/jetbrains-mono": "5.2.8",
+    "@fontsource-variable/vazirmatn": "5.2.8",
+    "@types/node": "22.18.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "eslint": "9.36.0",
+    "eslint-config-next": "16.3.5",
+    "playwright": "^1.63.0",
+    "schema-dts": "^1.1.5",
+    "typescript-eslint": "8.44.1"
+  }
+}

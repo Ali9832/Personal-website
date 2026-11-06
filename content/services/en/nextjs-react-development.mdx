@@ -1,0 +1,87 @@
+---
+translationKey: "nextjs-react"
+title: "Next.js and React development"
+metaTitle: "Next.js and React application development"
+metaDescription: "Full-stack work with Next.js, React and TypeScript: App Router, server rendering, and deployment to any plain Node host with no Vercel-only dependencies."
+h1: "Next.js and React development"
+navLabel: "Next.js & React"
+primaryKeyword: "Next.js development"
+secondaryKeywords:
+  - "React developer"
+  - "Next.js App Router"
+  - "TypeScript development"
+summary: "Web applications in Next.js and TypeScript — from a fast content site to an internal dashboard, deployable on ordinary Node hosting."
+icon: "react"
+order: 5
+deliverables:
+  - "A Next.js application on the App Router with TypeScript in strict mode"
+  - "API design and database integration (PostgreSQL or MySQL)"
+  - "Authentication and access control where required"
+  - "Build and deployment configuration for a standard Node host"
+  - "Core Web Vitals treated as part of delivery, not a later phase"
+  - "A git repository with clean history and a setup guide"
+process:
+  - title: "Architecture and data model"
+    body: "Before any component is written we settle the data model and the server/client boundary. That decision has more effect on final performance than anything else."
+  - title: "Build in layers"
+    body: "Design system and primitives first, then pages. Each stage is reviewable and open to feedback."
+  - title: "Deploy and hand over"
+    body: "Set up on your own server, with written instructions for building and shipping future updates."
+faq:
+  - q: "Do I have to deploy on Vercel?"
+    a: "No. I write the project so `output: standalone` runs on any ordinary Node server. No Edge Runtime, no platform-side image optimisation, no lock-in."
+  - q: "When is Next.js a better fit than WordPress?"
+    a: "When you have application logic rather than only content. If you need a brochure site or a blog, WordPress is cheaper and faster to deliver, and that is what I will recommend."
+  - q: "Can Next.js sit on top of an existing WordPress site?"
+    a: "Yes. WordPress as the content backend over REST or GraphQL, Next.js as the presentation layer. It works well for content-heavy sites that need to be fast."
+  - q: "Do you write tests?"
+    a: "For business logic, yes. For the UI, it depends on budget and how much the project is expected to grow."
+relatedServices:
+  - "chrome-extension-development"
+  - "site-speed-optimization"
+---
+
+## Server Components changed the problem
+
+The old React model was: the server sends an empty HTML shell, the browser downloads a few hundred kilobytes of JavaScript, then fetches data, then builds the page. Each step is a delay.
+
+With the App Router and Server Components, a component that only renders data never reaches the browser at all. The JavaScript that ships is only the genuinely interactive parts.
+
+```tsx
+// Runs on the server; not a byte of this file reaches the browser.
+export default async function InvoiceList({ customerId }: { customerId: string }) {
+  const invoices = await db.invoice.findMany({
+    where: { customerId },
+    orderBy: { issuedAt: "desc" },
+  });
+
+  return (
+    <ul>
+      {invoices.map((invoice) => (
+        <li key={invoice.id}>{invoice.number}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+The practical result is a page running on a few kilobytes of JavaScript instead of a few hundred.
+
+## Deploying to ordinary hosting
+
+This is the part that usually gets skipped and later gets expensive. Many Next.js projects drift into depending on platform-specific features and then will not run on a normal server.
+
+What I do from the start:
+
+- `output: "standalone"`, so the build output is a self-contained Node server.
+- No `runtime = "edge"` anywhere.
+- Image optimisation at build time rather than by the platform.
+- Environment variables from a file, not from one vendor's dashboard.
+
+<Callout title="What this means in practice">
+The build output starts with `node server.js`. It runs behind PM2, Passenger, or whatever your host provides.
+</Callout>
+
+## When Next.js is the wrong call
+
+If your site is five content pages that change twice a year, Next.js adds complexity for nothing. The same applies if your team only knows PHP and will maintain it themselves. I say this before the project starts, not after the invoice.

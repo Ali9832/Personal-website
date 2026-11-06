@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "siteName": "Ali Fatehi",
+    "role": "Web developer & performance engineer",
+    "title": "Ali Fatehi — WordPress, Next.js and web performance",
+    "description": "Freelance web developer: custom WordPress plugins, WooCommerce stores, Next.js and React apps, and Core Web Vitals work with measurable results.",
+    "titleTemplate": "%s | Ali Fatehi"
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "portfolio": "Work",
+    "blog": "Blog",
+    "products": "Products",
+    "about": "About",
+    "contact": "Contact",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "skipToContent": "Skip to main content",
+    "mainNavigation": "Main navigation",
+    "footerNavigation": "Footer navigation",
+    "breadcrumb": "Breadcrumb"
+  },
+  "theme": {
+    "label": "Theme",
+    "toggle": "Toggle light and dark theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "langSwitch": {
+    "label": "Change site language",
+    "target": "فارسی"
+  },
+  "common": {
+    "readMore": "Read more",
+    "viewAll": "View all",
+    "viewAllServices": "All services",
+    "viewAllWork": "All work",
+    "viewAllPosts": "All posts",
+    "viewCaseStudy": "Read the case study",
+    "startProject": "Start a project",
+    "getInTouch": "Get in touch",
+    "relatedService": "Related service",
+    "relatedPosts": "Related posts",
+    "relatedWork": "Related work",
+    "publishedOn": "Published",
+    "updatedOn": "Updated",
+    "faqTitle": "Frequently asked questions",
+    "process": "How it runs",
+    "deliverables": "What you get",
+    "stack": "Stack",
+    "client": "Client",
+    "industry": "Industry",
+    "year": "Year",
+    "confidential": "Confidential",
+    "liveSite": "Visit site",
+    "before": "Before",
+    "after": "After",
+    "improvement": "Change",
+    "results": "Results",
+    "problem": "Problem",
+    "priceFrom": "From",
+    "empty": "Nothing here yet."
+  },
+  "home": {
+    "eyebrow": "Freelance · Iran",
+    "h1": "Web development with WordPress, Next.js and a bias for speed",
+    "lead": "I build sites and make them fast: custom WordPress plugins, WooCommerce stores at scale, and Next.js applications. Every project ships with a number you can check, not a feeling.",
+    "primaryCta": "Tell me about your project",
+    "secondaryCta": "See the work",
+    "stackLabel": "What I work with daily",
+    "servicesTitle": "Services",
+    "servicesLead": "Six things I do well and do often.",
+    "workTitle": "Selected work",
+    "workLead": "Every case study starts with a problem and ends with a number you can see before and after.",
+    "blogTitle": "Recent writing",
+    "blogLead": "Things I learn on the job that are worth writing down.",
+    "approachTitle": "How I work",
+    "approachLead": "Three rules that keep projects finishing.",
+    "approach": [
+      {
+        "title": "Measure first",
+        "body": "Before touching code I record the current state: LCP, INP, CLS, transfer size, database queries. Without a baseline, \"it got faster\" is a claim, not a result."
+      },
+      {
+        "title": "Smallest change, largest effect",
+        "body": "A full rewrite is usually the most expensive and least effective option. I find the actual bottleneck first — it is often a handful of bad queries, a 400 KB slider and one plugin loading on every page."
+      },
+      {
+        "title": "Handover with documentation",
+        "body": "Code without explanation is technical debt. Every project ships with a short document: what changed, why, and where to look when you want to touch it later."
+      }
+    ],
+    "ctaTitle": "Got something in mind?",
+    "ctaBody": "Send a short description. If I'm a fit I'll say so, if I'm not I'll say that too, and if I know someone better suited I'll point you to them.",
+    "ctaButton": "Contact form"
+  },
+  "services": {
+    "h1": "Services",
+    "title": "Web development and performance services",
+    "description": "Site speed optimisation, WordPress development, WooCommerce stores, custom plugins, Next.js and React development, and Chrome extensions.",
+    "lead": "Each of these is a defined piece of work with a defined output. Open one to see exactly what you get.",
+    "ctaTitle": "Not sure which one you need?",
+    "ctaBody": "Just describe the problem. Working out which bucket it falls into is my job.",
+    "relatedTitle": "Related services",
+    "workTitle": "Work in this area",
+    "postsTitle": "Writing on this topic"
+  },
+  "portfolio": {
+    "h1": "Work",
+    "title": "Work and case studies",
+    "description": "Case studies from real projects: the client's problem, the technical decisions, and the result in numbers.",
+    "lead": "Every project has three parts: what the client's problem was, what I decided, and what came out of it.",
+    "problemTitle": "The problem",
+    "solutionTitle": "Approach and technical decisions",
+    "resultTitle": "Results",
+    "metricsCaption": "Before/after figures use the same tool and test settings; single figures describe the delivered scope."
+  },
+  "blog": {
+    "h1": "Blog",
+    "title": "Blog",
+    "description": "Technical notes on WordPress, WooCommerce, Next.js, site speed and Core Web Vitals.",
+    "lead": "Technical notes from real projects. No preamble, with code.",
+    "tocTitle": "In this article",
+    "tagsTitle": "Tags"
+  },
+  "products": {
+    "h1": "Products",
+    "title": "Digital products",
+    "description": "WordPress plugins, Chrome extensions and themes. Coming soon.",
+    "lead": "Plugins, extensions and themes that came out of real client work.",
+    "soonTitle": "Not published yet",
+    "soonBody": "I'm working on the first releases. If you want to hear when they land, send a message — the waiting list lives nowhere but my inbox.",
+    "soonCta": "Let me know"
+  },
+  "about": {
+    "h1": "About",
+    "title": "About Ali Fatehi",
+    "description": "Freelance web developer. WordPress at the core and hook level, Next.js and React, Python, and Core Web Vitals work.",
+    "lead": "I'm Ali Fatehi, a freelance web developer.",
+    "body": [
+      "I started with WordPress and a large part of my work is still WordPress — but not at the install-a-theme level. I work with core, hooks and filters, write custom plugins, and open WooCommerce up as far as needed to change how it behaves.",
+      "Alongside that I build with Next.js and React, front and back. I use Python for data work and automation, and I'm comfortable in MySQL and PostgreSQL — which in practice means that when a site is slow, I know the problem isn't always on the front end.",
+      "What interests me most is speed. Core Web Vitals aren't a decorative score; they're a direct measure of whether a visitor stays or leaves. That's why I record the before and after numbers on every project I take.",
+      "This site is deliberately built to be its own portfolio piece: no purchased theme, no unnecessary libraries, bilingual from the ground up with CSS logical properties, and a Lighthouse score you can run yourself right now."
+    ],
+    "skillsTitle": "Areas",
+    "skills": [
+      {
+        "title": "WordPress & WooCommerce",
+        "items": ["Core, hooks and filters", "Custom plugin development", "Bespoke themes, no page builder", "WooCommerce at scale", "REST API and WP-CLI"]
+      },
+      {
+        "title": "JavaScript & TypeScript",
+        "items": ["Next.js App Router", "React and Server Components", "TypeScript in strict mode", "Chrome extensions on Manifest V3"]
+      },
+      {
+        "title": "Backend & data",
+        "items": ["PHP", "Python", "MySQL and query optimisation", "PostgreSQL", "Schema design and migration"]
+      },
+      {
+        "title": "Performance & technical SEO",
+        "items": ["Core Web Vitals: LCP, INP, CLS", "Performance budgets and profiling", "Multi-layer caching", "Structured data and JSON-LD"]
+      }
+    ],
+    "ctaTitle": "Something to build together?",
+    "ctaBody": "If you have a project that matches this, I'd like to hear about it."
+  },
+  "contact": {
+    "h1": "Contact",
+    "title": "Contact",
+    "description": "Describe your project. I usually reply within one business day.",
+    "lead": "The more specific you are, the more specific my answer can be. If you have a link to the current site or a document, drop it in.",
+    "responseTime": "I usually reply within one business day.",
+    "directTitle": "Prefer to message directly?",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your full name",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "e.g. Slow WooCommerce store",
+      "budget": "Approximate budget",
+      "budgetPlaceholder": "Optional",
+      "budgetOptions": ["Not sure yet", "Under $1,000", "$1,000 – $3,000", "$3,000 – $8,000", "Over $8,000"],
+      "message": "Project details",
+      "messagePlaceholder": "What do you have, what's wrong with it, and what does success look like?",
+      "submit": "Send message",
+      "submitting": "Sending…",
+      "required": "required",
+      "optional": "optional",
+      "successTitle": "Message received",
+      "successBody": "Thanks. I've got your message and will reply shortly.",
+      "errorTitle": "Not sent",
+      "errorGeneric": "Something went wrong. Please try again or email me directly.",
+      "errorRateLimited": "Too many requests. Try again in a few minutes.",
+      "errorValidation": "A few fields need fixing.",
+      "sendAnother": "Send another message",
+      "honeypotLabel": "Leave this field empty"
+    },
+    "validation": {
+      "nameMin": "Please enter your name.",
+      "nameMax": "That name is too long.",
+      "emailInvalid": "Please enter a valid email address.",
+      "subjectMin": "Give the subject in a few words.",
+      "messageMin": "Please write at least a couple of sentences about the project.",
+      "messageMax": "That message is too long. Trim it or email the file instead."
+    }
+  },
+  "footer": {
+    "tagline": "Web development, performance work and custom WordPress plugins.",
+    "sitemap": "Pages",
+    "servicesTitle": "Services",
+    "elsewhere": "Elsewhere",
+    "rights": "All rights reserved.",
+    "builtWith": "Built with Next.js, no purchased theme.",
+    "email": "Email",
+    "telegram": "Telegram",
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "h1": "This page doesn't exist",
+    "body": "The address is wrong or the page has moved. Maybe one of these helps?",
+    "home": "Back home"
+  }
+}

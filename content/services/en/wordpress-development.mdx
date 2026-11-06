@@ -1,0 +1,79 @@
+---
+translationKey: "wordpress-development"
+title: "WordPress development"
+metaTitle: "WordPress development without a bought theme"
+metaDescription: "Custom WordPress themes built without a page builder: clean code, fast pages, and a correct SEO structure from day one rather than bolted on later."
+h1: "WordPress development"
+navLabel: "WordPress"
+primaryKeyword: "WordPress development"
+secondaryKeywords:
+  - "custom WordPress theme"
+  - "WordPress developer"
+  - "bespoke WordPress site"
+summary: "A WordPress site on a bespoke theme with no page builder — light, maintainable, and structured for search from the first commit."
+icon: "wordpress"
+order: 2
+deliverables:
+  - "Bespoke theme written against WordPress core, with no page-builder dependency"
+  - "A simple editing experience with custom fields for each content type"
+  - "Correct heading structure, schema and metadata at the theme level"
+  - "Responsive, mobile-first layout with accessibility built in"
+  - "Baseline performance work: images, fonts, and minimal script"
+  - "A short screen recording covering day-to-day content editing"
+process:
+  - title: "Define the content model"
+    body: "Before any design work we establish what kinds of content the site has and what fields each one needs. A correct content model makes both SEO and maintenance straightforward."
+  - title: "Build the theme"
+    body: "The theme is written from scratch and loads only what is used. The result is a page running on tens of kilobytes of CSS and JS rather than several megabytes."
+  - title: "Hand over and train"
+    body: "The site ships with real content, not placeholder text, plus a short session so you can manage it yourself."
+faq:
+  - q: "Why not use a page builder or a bought theme?"
+    a: "For simple sites on tight budgets a page builder is a reasonable choice and I will say so. But if speed and control matter, every page builder adds tens of kilobytes of CSS and JS that cannot be removed."
+  - q: "Can I edit the content myself afterwards?"
+    a: "Yes. All text and images are editable from the WordPress admin. What is locked down is structure and layout — precisely so the site does not degrade over time."
+  - q: "Do you provide hosting and domains?"
+    a: "No, but I will help you choose suitable hosting, and deployment to your host is part of the work."
+  - q: "What if I want to add a shop later?"
+    a: "The theme is written so adding WooCommerce does not mean a rewrite. I plan for it from the start if I know it is on your roadmap."
+relatedServices:
+  - "woocommerce-development"
+  - "custom-wordpress-plugin"
+  - "site-speed-optimization"
+---
+
+## WordPress is not the problem
+
+WordPress did not earn its reputation for being slow on its own. A clean install with a simple theme responds in a few hundred milliseconds. What makes a site heavy is usually this combination: a multipurpose theme written for every kind of site, plus a page builder, plus twenty plugins each doing a slice of what the theme should do.
+
+I start from the opposite end: the theme contains exactly what your site needs.
+
+## Content types, not pages
+
+Most projects go wrong at the point where a *page* is designed rather than a *content type*. The difference shows up when you add the fiftieth item.
+
+```php
+// A defined content type with defined fields, instead of
+// hand-arranging the same blocks on every page.
+register_post_type( 'project', [
+    'label'        => 'Projects',
+    'public'       => true,
+    'has_archive'  => true,
+    'rewrite'      => [ 'slug' => 'projects', 'with_front' => false ],
+    'supports'     => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
+    'show_in_rest' => true,
+] );
+```
+
+Once content has structure, getting it out again — for the site, for schema, for a feed, or tomorrow for a mobile app — is a few lines of work.
+
+## What does not go into the theme
+
+- **jQuery**, unless a plugin genuinely requires it.
+- **Remote fonts.** Fonts are self-hosted and served with `font-display: swap`.
+- **A whole CSS framework.** Only what is used.
+- **Tracking scripts in `wp_head`** without checking their effect on INP.
+
+## Accessibility is part of the build
+
+AA contrast, visible focus on every interactive element, full keyboard navigation, correct heading order. None of this costs extra time if it is done from the start. Retrofitting it later is close to a rewrite.

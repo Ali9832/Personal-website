@@ -1,0 +1,214 @@
+/* ---------------------------------------------------------------------------
+   Long-form content styles. Hand-written rather than @tailwindcss/typography
+   because that plugin's vertical rhythm is tuned for 16px/1.65 Latin text and
+   fights Persian at 17px/1.85 — and because it emits physical margins.
+--------------------------------------------------------------------------- */
+
+.prose {
+  max-inline-size: var(--measure);
+  color: var(--text);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+}
+
+.prose > * + * {
+  margin-block-start: 1.25em;
+}
+
+.prose h2 {
+  font-size: var(--text-2xl);
+  margin-block-start: 2.25em;
+  margin-block-end: 0;
+  scroll-margin-block-start: 6rem;
+}
+
+.prose h3 {
+  font-size: var(--text-xl);
+  margin-block-start: 1.85em;
+  margin-block-end: 0;
+  scroll-margin-block-start: 6rem;
+}
+
+.prose h4 {
+  font-size: var(--text-lg);
+  margin-block-start: 1.5em;
+  margin-block-end: 0;
+}
+
+.prose h2 + *,
+.prose h3 + *,
+.prose h4 + * {
+  margin-block-start: 0.7em;
+}
+
+.prose a {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-border);
+  transition: text-decoration-color var(--dur) var(--ease);
+}
+
+.prose a:hover {
+  text-decoration-color: var(--accent);
+}
+
+.prose strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.prose ul,
+.prose ol {
+  padding-inline-start: 1.5em;
+}
+
+.prose li + li {
+  margin-block-start: 0.5em;
+}
+
+.prose ul > li::marker {
+  color: var(--accent);
+}
+
+.prose ol > li::marker {
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+.prose blockquote {
+  border-inline-start: 3px solid var(--accent);
+  padding-inline-start: 1.1em;
+  color: var(--text-muted);
+  font-style: normal;
+}
+
+.prose code {
+  font-size: 0.875em;
+  background-color: var(--surface-sunk);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding-block: 0.12em;
+  padding-inline: 0.35em;
+  direction: ltr;
+  unicode-bidi: embed;
+  display: inline-block;
+}
+
+.prose pre {
+  direction: ltr;
+  text-align: start;
+  background-color: var(--surface-sunk);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  font-size: var(--text-sm);
+  line-height: 1.7;
+}
+
+.prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+  display: block;
+}
+
+.prose table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  display: block;
+  overflow-x: auto;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.8rem;
+  text-align: start;
+}
+
+.prose th {
+  background-color: var(--surface-sunk);
+  font-weight: 600;
+}
+
+.prose img {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.prose figcaption {
+  font-size: var(--text-sm);
+  color: var(--text-subtle);
+  margin-block-start: 0.6em;
+  text-align: center;
+}
+
+/* Anchor links injected by rehype-autolink-headings. */
+.prose .heading-anchor {
+  color: var(--text-subtle);
+  text-decoration: none;
+  opacity: 0;
+  margin-inline-start: 0.35em;
+  font-weight: 400;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.prose :is(h2, h3, h4):hover .heading-anchor,
+.prose .heading-anchor:focus-visible {
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Shiki dual-theme output. rehype-pretty-code writes both palettes onto every
+   token as custom properties; switching themes is one CSS rule, not a
+   re-highlight.
+--------------------------------------------------------------------------- */
+
+.prose pre code [data-line] {
+  display: block;
+}
+
+.prose :is(pre, code)[data-theme] span {
+  color: var(--shiki-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .prose :is(pre, code)[data-theme] span {
+    color: var(--shiki-dark);
+  }
+}
+
+:root[data-theme="dark"] .prose :is(pre, code)[data-theme] span {
+  color: var(--shiki-dark);
+}
+
+.prose code[data-theme] {
+  direction: ltr;
+}
+
+.prose figure[data-rehype-pretty-code-figure] {
+  margin-block: 1.25em;
+}
+
+.prose [data-rehype-pretty-code-title] {
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  background-color: var(--surface-sunk);
+  border: 1px solid var(--border);
+  border-block-end: 0;
+  border-start-start-radius: var(--radius-md);
+  border-start-end-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  direction: ltr;
+  text-align: start;
+}
+
+.prose [data-rehype-pretty-code-title] + pre {
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+  margin-block-start: 0;
+}

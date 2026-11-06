@@ -1,0 +1,118 @@
+---
+translationKey: "woocommerce-queries"
+title: "Why WooCommerce product filtering slows down on large catalogues"
+metaTitle: "Slow WooCommerce filter queries"
+metaDescription: "WordPress's postmeta table was never built for product filtering. Here is why, and three practical fixes ordered from cheapest to most expensive."
+description: "The wp_postmeta table is excellent at storing arbitrary data and terrible at filtering on it. An explanation of the root cause and three fixes, cheapest first."
+publishedAt: 2026-06-20
+tags:
+  - "WooCommerce"
+  - "MySQL"
+  - "performance"
+relatedService: "woocommerce-development"
+relatedPosts:
+  - "improve-lcp-wordpress"
+faq:
+  - q: "At what catalogue size does this start?"
+    a: "Usually around two to three thousand products, but the driver is the number of filterable attributes rather than the product count. A thousand products with twenty attributes can be worse than ten thousand with three."
+  - q: "Is there a better filter plugin that solves this?"
+    a: "Good filter plugins implement these same fixes internally. But if a plugin still queries postmeta directly, switching plugins changes nothing."
+  - q: "Wouldn't migrating to another platform be better?"
+    a: "Almost never. Migration costs months and risks your search rankings, for a problem usually solved with a lookup table in a few days."
+---
+
+You have a store with eight thousand products. The unfiltered category page loads in a second. The visitor picks two filters and it takes seven. Why?
+
+## The root cause: `wp_postmeta`
+
+WordPress stores post metadata in a vertical table:
+
+```
+post_id | meta_key      | meta_value
+--------|---------------|------------
+  1024  | _price        | 24.50
+  1024  | _stock_status | instock
+  1024  | _brand_id     | 17
+```
+
+This design is excellent for "attach anything to any post". It is terrible for "find every product where brand is 17 and stock is in", because each condition needs its own join back to the same table:
+
+```sql
+SELECT p.ID FROM wp_posts p
+  INNER JOIN wp_postmeta m1 ON p.ID = m1.post_id
+  INNER JOIN wp_postmeta m2 ON p.ID = m2.post_id
+WHERE p.post_type = 'product'
+  AND m1.meta_key = '_brand_id'     AND m1.meta_value = '17'
+  AND m2.meta_key = '_stock_status' AND m2.meta_value = 'instock';
+```
+
+On a table with two million rows, three filters means three joins and a temporary table.
+
+Two further problems are less visible:
+
+**`meta_value` is `LONGTEXT`.** MySQL cannot index the whole column, and WordPress's default index covers only `meta_key`.
+
+**Numeric comparison on a text column.** A price filter becomes `CAST(meta_value AS DECIMAL)`, which defeats any index.
+
+## Fix 1: a composite index (cheap)
+
+If you only have a few filterable attributes, a composite index may be enough:
+
+```sql
+ALTER TABLE wp_postmeta
+  ADD INDEX meta_key_value_post (meta_key(32), meta_value(32), post_id);
+```
+
+Half an hour of work, and on mid-sized catalogues it can cut query time several-fold. The trade-off: a larger table and slightly slower writes. On big tables this statement locks the table, so run it in a quiet window with a backup.
+
+## Fix 2: a flat lookup table (best ratio)
+
+A table holding only the filterable fields, with correct data types:
+
+```sql
+CREATE TABLE wp_acme_product_facets (
+  product_id   BIGINT UNSIGNED NOT NULL PRIMARY KEY,
+  brand_id     INT UNSIGNED    NOT NULL DEFAULT 0,
+  category_id  INT UNSIGNED    NOT NULL DEFAULT 0,
+  price        DECIMAL(12,2)   NOT NULL DEFAULT 0,
+  in_stock     TINYINT(1)      NOT NULL DEFAULT 0,
+  INDEX brand_stock_price (brand_id, in_stock, price),
+  INDEX category_price    (category_id, price)
+) ENGINE=InnoDB;
+```
+
+A single hook keeps it in sync:
+
+```php
+add_action( 'woocommerce_update_product', function ( int $product_id ): void {
+    $product = wc_get_product( $product_id );
+    if ( ! $product ) {
+        return;
+    }
+
+    global $wpdb;
+    $wpdb->replace( "{$wpdb->prefix}acme_product_facets", [
+        'product_id'  => $product_id,
+        'brand_id'    => (int) $product->get_meta( '_brand_id' ),
+        'category_id' => (int) ( wc_get_product_cat_ids( $product_id )[0] ?? 0 ),
+        'price'       => (float) $product->get_price(),
+        'in_stock'    => $product->is_in_stock() ? 1 : 0,
+    ] );
+} );
+```
+
+The filter query becomes one `SELECT` against a properly indexed eight-thousand-row table instead of three joins across two million rows.
+
+<Callout title="Migration note">
+Write a WP-CLI command that backfills the table once for existing products. Without it, only products edited after installation get a row.
+</Callout>
+
+## Fix 3: a search engine (expensive)
+
+Elasticsearch or Meilisearch solve the problem completely and give you good full-text search as well. They also add another service to run, sync and monitor.
+
+I recommend this when it is genuinely warranted: catalogues above fifty thousand products, or when smart text search is part of the product experience.
+
+## Suggested order
+
+Measure first (`SAVEQUERIES` or Query Monitor), then index, then the lookup table, and only then a search engine. Contrary to the usual advice, platform migration is almost never on this list.

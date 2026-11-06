@@ -1,0 +1,79 @@
+---
+translationKey: "speed-optimization"
+title: "Site speed optimisation"
+metaTitle: "Site speed optimisation & Core Web Vitals"
+metaDescription: "WordPress and WooCommerce performance work with before-and-after numbers for LCP, INP and CLS. Finding the real bottleneck, not installing another cache plugin."
+h1: "Site speed optimisation"
+navLabel: "Site speed"
+primaryKeyword: "site speed optimisation"
+secondaryKeywords:
+  - "Core Web Vitals"
+  - "WordPress performance"
+  - "reduce LCP"
+  - "WooCommerce speed"
+summary: "Finding what is actually slow and getting LCP, INP and CLS into the green — reported as a before and after number, not a Lighthouse screenshot."
+icon: "speed"
+order: 1
+deliverables:
+  - "Baseline profile: LCP, INP, CLS, TTFB, transfer size and database query time"
+  - "Prioritised list of bottlenecks with the estimated impact of each"
+  - "The optimisations implemented on your site, not written up as advice"
+  - "Multi-layer caching configured: object cache, page cache, browser cache"
+  - "Final report with before and after numbers on the same pages under the same conditions"
+  - "A short maintenance note: what not to do so it does not get slow again"
+process:
+  - title: "Measure and diagnose"
+    body: "Before changing anything I record the current state from both field and lab data, and establish where the time actually goes: server, queries, JavaScript, or images."
+  - title: "Fix in order of impact"
+    body: "Biggest win first. Three or four changes usually produce eighty percent of the improvement; the rest rarely pays for itself."
+  - title: "Stabilise and hand over"
+    body: "Caching is configured so publishing content does not break it, everything is re-measured, and the before/after report includes the method used."
+faq:
+  - q: "How long does it take?"
+    a: "A typical business site is three to five working days. A WooCommerce store with several thousand products is one to two weeks, depending on the state of the database."
+  - q: "Can you guarantee a score of 100?"
+    a: "No, and anyone who does either has not seen your site or intends to game the lab number. What I guarantee is a transparent before and after; if there is no meaningful gain, I put the reason in writing."
+  - q: "Will the site go down while you work?"
+    a: "No. Work happens on a staging copy and only approved changes are applied to production."
+  - q: "How is this different from installing a cache plugin?"
+    a: "A cache plugin is one layer, and it does nothing at all for pages that cannot be cached — cart, checkout, account. The bulk of the work is reducing what the server and the browser have to do in the first place."
+relatedServices:
+  - "woocommerce-development"
+  - "wordpress-development"
+---
+
+## Speed is a chain, not a number
+
+When someone says "the site is slow", they almost always mean one of four things, and each has a completely different fix:
+
+1. **The server responds late** (high TTFB) — PHP, database queries, or a missing object cache.
+2. **The main content arrives late** (high LCP) — usually an unoptimised image, a font without preload, or a JavaScript slider.
+3. **The page responds late to clicks** (high INP) — too much JavaScript on the main thread.
+4. **Content jumps while loading** (high CLS) — images without dimensions, injected banners, fonts without a matched fallback.
+
+What usually happens is that a plugin gets installed for problem 1 which only slightly improves problem 2. That is why measurement comes first.
+
+## What actually gets measured
+
+Lab data is good for diagnosis but it is not the verdict. The verdict is field data — what Google collects from your real visitors and uses in ranking. The report shows both.
+
+| Metric | Green threshold | What it means |
+| --- | --- | --- |
+| LCP | under 2.5s | When the visitor feels the page has arrived |
+| INP | under 200ms | How long a click takes to respond |
+| CLS | under 0.1 | How much content moves under the cursor |
+| TTFB | under 800ms | How long the server takes to start |
+
+## What usually moves the needle
+
+On WordPress sites these come up again and again:
+
+- **`meta_query` without a supporting index** on `wp_postmeta`. Across a few thousand products a two-condition filter can take seconds.
+- **Plugins that load everywhere.** A form builder injecting its CSS and JS into product pages.
+- **No object cache.** Without Redis or Memcached, WordPress repeats dozens of `wp_options` queries on every request.
+- **Remote fonts.** Every font from another origin is a DNS lookup and a TLS handshake before a single letter is painted.
+- **Images without `width` and `height`.** The most common cause of CLS and the cheapest thing to fix.
+
+<Callout type="tip" title="A 30-second test">
+Open devtools, Network tab, and load a product page with an empty cache. If total transfer is over 3 MB or the request count is over 100, your problem is in the page itself, before any server tuning.
+</Callout>

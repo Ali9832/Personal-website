@@ -1,0 +1,118 @@
+---
+translationKey: "woocommerce-queries"
+title: "چرا فیلتر محصولات ووکامرس روی کاتالوگ بزرگ کند می‌شود"
+metaTitle: "کوئری‌های کند فیلتر در ووکامرس"
+metaDescription: "ساختار postmeta در وردپرس برای فیلتر محصول ساخته نشده. این نوشته توضیح می‌دهد چرا، و سه راه‌حل عملی با ترتیب هزینه ارائه می‌دهد."
+description: "جدول wp_postmeta برای ذخیره داده دلخواه عالی است و برای فیلتر کردن روی آن افتضاح. توضیح ریشه مسئله و سه راه‌حل، از ارزان به گران."
+publishedAt: 2026-06-20
+tags:
+  - "ووکامرس"
+  - "MySQL"
+  - "سرعت سایت"
+relatedService: "froshgah-woocommerce"
+relatedPosts:
+  - "behbood-lcp-wordpress"
+faq:
+  - q: "از چه تعداد محصولی این مشکل شروع می‌شود؟"
+    a: "معمولاً از حدود دو تا سه هزار محصول، ولی عامل اصلی تعداد ویژگی‌های قابل فیلتر است نه تعداد محصول. هزار محصول با بیست ویژگی می‌تواند بدتر از ده هزار محصول با سه ویژگی باشد."
+  - q: "آیا افزونه فیلتر بهتری وجود دارد که این را حل کند؟"
+    a: "افزونه‌های خوب فیلتر معمولاً همین راه‌حل‌ها را داخلی پیاده کرده‌اند. ولی اگر افزونه‌ای همچنان روی postmeta کوئری بزند، تغییر افزونه چیزی را عوض نمی‌کند."
+  - q: "مهاجرت به پلتفرم دیگر بهتر نیست؟"
+    a: "تقریباً هیچ‌وقت. مهاجرت ماه‌ها زمان و ریسک سئو دارد، برای مشکلی که معمولاً با یک جدول کمکی در چند روز حل می‌شود."
+---
+
+یک فروشگاه با هشت هزار محصول دارید. صفحه دسته‌بندی بدون فیلتر در یک ثانیه باز می‌شود. کاربر دو فیلتر انتخاب می‌کند و صفحه هفت ثانیه طول می‌کشد. چرا؟
+
+## ریشه مسئله: `wp_postmeta`
+
+وردپرس متادیتای هر محتوا را در یک جدول عمودی نگه می‌دارد:
+
+```
+post_id | meta_key      | meta_value
+--------|---------------|------------
+  1024  | _price        | 250000
+  1024  | _stock_status | instock
+  1024  | _brand_id     | 17
+```
+
+این طراحی برای «هر چیزی را به هر محتوایی بچسبان» عالی است. برای «همه محصولاتی را پیدا کن که برند ۱۷ و موجود هستند» افتضاح است، چون هر شرط یک `JOIN` جداگانه به همان جدول لازم دارد:
+
+```sql
+SELECT p.ID FROM wp_posts p
+  INNER JOIN wp_postmeta m1 ON p.ID = m1.post_id
+  INNER JOIN wp_postmeta m2 ON p.ID = m2.post_id
+WHERE p.post_type = 'product'
+  AND m1.meta_key = '_brand_id'     AND m1.meta_value = '17'
+  AND m2.meta_key = '_stock_status' AND m2.meta_value = 'instock';
+```
+
+روی جدولی با دو میلیون ردیف، سه فیلتر یعنی سه `JOIN` و یک `temporary table` در حافظه.
+
+دو مشکل دیگر هم هست که کمتر دیده می‌شوند:
+
+**`meta_value` از نوع `LONGTEXT` است.** MySQL نمی‌تواند روی کل آن ایندکس بزند و ایندکس پیش‌فرض وردپرس فقط روی `meta_key` است.
+
+**مقایسه عددی روی ستون متنی.** فیلتر قیمت یعنی `CAST(meta_value AS DECIMAL)` که هر ایندکسی را بی‌اثر می‌کند.
+
+## راه‌حل ۱: ایندکس ترکیبی (ارزان)
+
+اگر فقط چند ویژگی قابل فیلتر دارید، یک ایندکس ترکیبی ممکن است کافی باشد:
+
+```sql
+ALTER TABLE wp_postmeta
+  ADD INDEX meta_key_value_post (meta_key(32), meta_value(32), post_id);
+```
+
+نیم ساعت کار، و روی کاتالوگ‌های متوسط می‌تواند زمان را چند برابر کم کند. عیبش: جدول بزرگ‌تر می‌شود و نوشتن کمی کندتر. روی جدول‌های بزرگ، اجرای این دستور جدول را قفل می‌کند — پس در بازه کم‌ترافیک و با بکاپ.
+
+## راه‌حل ۲: جدول تخت کمکی (بهترین نسبت)
+
+یک جدول که فقط فیلدهای قابل فیلتر را نگه می‌دارد، با نوع داده درست:
+
+```sql
+CREATE TABLE wp_acme_product_facets (
+  product_id   BIGINT UNSIGNED NOT NULL PRIMARY KEY,
+  brand_id     INT UNSIGNED    NOT NULL DEFAULT 0,
+  category_id  INT UNSIGNED    NOT NULL DEFAULT 0,
+  price        DECIMAL(12,2)   NOT NULL DEFAULT 0,
+  in_stock     TINYINT(1)      NOT NULL DEFAULT 0,
+  INDEX brand_stock_price (brand_id, in_stock, price),
+  INDEX category_price    (category_id, price)
+) ENGINE=InnoDB;
+```
+
+با یک هوک ساده همیشه همگام می‌ماند:
+
+```php
+add_action( 'woocommerce_update_product', function ( int $product_id ): void {
+    $product = wc_get_product( $product_id );
+    if ( ! $product ) {
+        return;
+    }
+
+    global $wpdb;
+    $wpdb->replace( "{$wpdb->prefix}acme_product_facets", [
+        'product_id'  => $product_id,
+        'brand_id'    => (int) $product->get_meta( '_brand_id' ),
+        'category_id' => (int) ( wc_get_product_cat_ids( $product_id )[0] ?? 0 ),
+        'price'       => (float) $product->get_price(),
+        'in_stock'    => $product->is_in_stock() ? 1 : 0,
+    ] );
+} );
+```
+
+حالا کوئری فیلتر یک `SELECT` روی جدولی با هشت هزار ردیف و ایندکس درست است، نه سه `JOIN` روی دو میلیون ردیف.
+
+<Callout title="نکته مهاجرت">
+یک اسکریپت WP-CLI بنویسید که جدول را برای محصولات موجود یک‌بار پر کند. بدون آن، جدول فقط برای محصولاتی پر می‌شود که بعد از نصب ویرایش شده‌اند.
+</Callout>
+
+## راه‌حل ۳: موتور جست‌وجو (گران)
+
+Elasticsearch یا Meilisearch مسئله را کامل حل می‌کنند و جست‌وجوی متنی خوبی هم می‌دهند. ولی یک سرویس دیگر برای نگهداری، همگام‌سازی و مانیتورینگ اضافه می‌کنند.
+
+این را وقتی پیشنهاد می‌دهم که واقعاً لازم باشد: کاتالوگ بالای پنجاه هزار محصول، یا وقتی جست‌وجوی متنی هوشمند بخشی از تجربه محصول است.
+
+## ترتیب پیشنهادی
+
+اول اندازه بگیرید (`SAVEQUERIES` یا Query Monitor)، بعد ایندکس، بعد جدول کمکی، و فقط اگر واقعاً لازم بود موتور جست‌وجو. برخلاف چیزی که معمولاً پیشنهاد می‌شود، مهاجرت پلتفرم تقریباً هیچ‌وقت در این فهرست نیست.

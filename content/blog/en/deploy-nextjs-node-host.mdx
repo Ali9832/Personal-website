@@ -1,0 +1,102 @@
+---
+translationKey: "nextjs-deploy"
+title: "Deploying Next.js to ordinary Node hosting, without Vercel lock-in"
+metaTitle: "Deploying Next.js to a plain Node host"
+metaDescription: "How to write a Next.js project that runs on any standard Node server: standalone output, no Edge Runtime, and image optimisation done at build time."
+description: "Many Next.js projects drift into depending on platform-specific features and then will not run on a normal server. Four decisions that prevent it from the start."
+publishedAt: 2026-08-15
+tags:
+  - "Next.js"
+  - "deployment"
+  - "Node.js"
+relatedService: "nextjs-react-development"
+relatedPosts:
+  - "improve-lcp-wordpress"
+faq:
+  - q: "Does Next.js require Vercel?"
+    a: "No. Next.js is open source and runs on any Node server with `output: standalone`. What creates lock-in is using platform-specific features such as Edge Runtime or platform-side image optimisation."
+  - q: "What is the minimum Node version?"
+    a: "For recent Next.js releases, 20.9 or later. Check your host's Node version before committing to it."
+  - q: "Does it work on shared cPanel hosting?"
+    a: "If the host supports Node.js Selector or Passenger, yes. Shared hosting without Node support only works for a static export."
+---
+
+Next.js is open source and nothing obliges you to host it on Vercel. But there are a handful of features that, once used, effectively pin the project there — and you usually find out late.
+
+Make these four decisions on day one.
+
+## 1. `output: "standalone"`
+
+Without it the build output depends on the whole of `node_modules`, and running it means shipping everything to the server.
+
+```js
+// next.config.mjs
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: "standalone",
+  poweredByHeader: false,
+  compress: true,
+};
+
+export default nextConfig;
+```
+
+The output in `.next/standalone` is a self-contained Node server started with `node server.js`. Two things are commonly forgotten:
+
+```bash
+# Static folders are not copied automatically.
+cp -r public .next/standalone/public
+cp -r .next/static .next/standalone/.next/static
+```
+
+## 2. No `runtime = "edge"`
+
+Edge Runtime is a restricted V8 environment, not Node. On an ordinary server, routes declaring it either do not work or behave differently. For a project destined for Node the benefit is zero and the cost is lock-in.
+
+```ts
+// Declare Node explicitly in route handlers
+export const runtime = "nodejs";
+```
+
+## 3. Optimise images at build time
+
+`next/image` with the default loader does work on your own server, but it resizes on first request and writes into `.next/cache/images`. On shared hosting that means the first visit to every image is slow, and on a restricted filesystem it fails outright.
+
+The more durable route is to build the variants ahead of time.
+
+```js
+// next.config.mjs
+images: { unoptimized: true },
+```
+
+Plus a build script that uses `sharp` to emit AVIF and WebP at several widths. The result is zero runtime CPU and identical behaviour on any host.
+
+## 4. Environment variables from a file
+
+Anything read at build time (`NEXT_PUBLIC_*`) must exist when the build runs. If you build on the server, that is a `.env.production` next to the project; if you build in CI, the variables must be defined there.
+
+<Callout type="warn" title="A common mistake">
+If `NEXT_PUBLIC_SITE_URL` is empty at build time, canonical tags and the sitemap are generated against the default value — and you will not notice until someone reports it.
+</Callout>
+
+## Running it
+
+With PM2:
+
+```bash
+cd .next/standalone
+pm2 start server.js --name site --env production -i 1
+pm2 save
+```
+
+Note the `-i 1`. In cluster mode each process has its own memory, which means any in-memory rate limit or cache you wrote is multiplied by the number of instances.
+
+On cPanel with Node.js Selector, set the startup file to `.next/standalone/server.js` and define `NODE_ENV=production` and `PORT` in that panel.
+
+## Pre-handover checklist
+
+- `npm run build` tested on the same Node version as the server.
+- `public` and `.next/static` copied across.
+- `NEXT_PUBLIC_SITE_URL` set correctly.
+- Cache headers for `/_next/static` set to immutable.
+- Test a full server restart, not just the first boot.

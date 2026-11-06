@@ -1,0 +1,100 @@
+{
+  "/media/covers/dellihome": {
+    "width": 1600,
+    "height": 1000,
+    "widths": [
+      480,
+      768,
+      1200,
+      1600
+    ],
+    "avif": "/media/covers/dellihome/{w}.avif",
+    "webp": "/media/covers/dellihome/{w}.webp",
+    "fallback": "/media/covers/dellihome/1600.jpg",
+    "blurDataURL": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAADwAQCdASoQAAoAA4BaJZQAAvwc5YTS3AAA/vPP/Rp+gUTx33k1j9iA4R2b3v/BCETks3rf37cmn7tqSCcfg1S2igDl5ti3mziVDuP30bHKVla8ym2EeXv0peWAhQAA"
+  },
+  "/media/covers/doctor-kordi": {
+    "width": 1600,
+    "height": 1000,
+    "widths": [
+      480,
+      768,
+      1200,
+      1600
+    ],
+    "avif": "/media/covers/doctor-kordi/{w}.avif",
+    "webp": "/media/covers/doctor-kordi/{w}.webp",
+    "fallback": "/media/covers/doctor-kordi/1600.jpg",
+    "blurDataURL": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAADQAQCdASoQAAoAA4BaJZQAAudYp/wxAAD+mx0REteFGoFceKs5zIrZvzs4X6eSb5A2mZ3vzE6DnfaMI5UROeEAAAA="
+  },
+  "/media/covers/golpiran": {
+    "width": 1600,
+    "height": 1000,
+    "widths": [
+      480,
+      768,
+      1200,
+      1600
+    ],
+    "avif": "/media/covers/golpiran/{w}.avif",
+    "webp": "/media/covers/golpiran/{w}.webp",
+    "fallback": "/media/covers/golpiran/1600.jpg",
+    "blurDataURL": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADQAQCdASoQAAoAA4BaJYwCdAEPQo4ggAD+6gFU3HZ23c/AEozpH355ohbXDUMt/yyf2nQYbSOsahhw7wEZvGTtGLZlFcOtYAA="
+  },
+  "/media/covers/ipapda": {
+    "width": 1600,
+    "height": 1000,
+    "widths": [
+      480,
+      768,
+      1200,
+      1600
+    ],
+    "avif": "/media/covers/ipapda/{w}.avif",
+    "webp": "/media/covers/ipapda/{w}.webp",
+    "fallback": "/media/covers/ipapda/1600.jpg",
+    "blurDataURL": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAADwAQCdASoQAAoAA4BaJZwAAupeiPwcioAA/tPr/BHoQNc+VIDogPDww7eANYahWFw/L11lapZsbxZZzy8KbkPkSLP39ks0eUgXeP6oySPmG2raB5SU6GTjwjgU6AAA"
+  },
+  "/media/covers/parde": {
+    "width": 1600,
+    "height": 1000,
+    "widths": [
+      480,
+      768,
+      1200,
+      1600
+    ],
+    "avif": "/media/covers/parde/{w}.avif",
+    "webp": "/media/covers/parde/{w}.webp",
+    "fallback": "/media/covers/parde/1600.jpg",
+    "blurDataURL": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADwAQCdASoQAAoAA4BaJZwAAxf8lnClEAAA/th3Z5nh7lppD5fiPh323ufs5LCagRSxCpdzpXBtAGA+20p4wSo1Nh5JyxVLKUlKw3wCAAA="
+  },
+  "/media/covers/parsafza": {
+    "width": 1600,
+    "height": 1000,
+    "widths": [
+      480,
+      768,
+      1200,
+      1600
+    ],
+    "avif": "/media/covers/parsafza/{w}.avif",
+    "webp": "/media/covers/parsafza/{w}.webp",
+    "fallback": "/media/covers/parsafza/1600.jpg",
+    "blurDataURL": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAoAA4BaJZQCw7EPDKSz73gAzejEHi1d2q3MQ7cS5V3O2lWiRDxlKRmv/2LeZahNBzpJlLwmwaHRAjVnSM9gQAA="
+  },
+  "/media/covers/rgp-market": {
+    "width": 1600,
+    "height": 1000,
+    "widths": [
+      480,
+      768,
+      1200,
+      1600
+    ],
+    "avif": "/media/covers/rgp-market/{w}.avif",
+    "webp": "/media/covers/rgp-market/{w}.webp",
+    "fallback": "/media/covers/rgp-market/1600.jpg",
+    "blurDataURL": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAACQAQCdASoQAAoAA4BaJYwAAp3CRqAA/vZLs6AdbXNzeyK9j0B6r4kOdHtdb4Meij2laDl5e24wCijgAAA="
+  }
+}

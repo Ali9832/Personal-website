@@ -1,0 +1,17 @@
+# Host-built native modules (sharp, resvg) must never overwrite the
+# alpine ones installed in the deps stage.
+node_modules
+.next
+out
+.git
+.idea
+.gapcode
+.agents
+*.zip
+ali.parsafza.ir
+.env
+.env.*
+!.env.example
+!.env.runflare.example
+public/api
+public/.htaccess

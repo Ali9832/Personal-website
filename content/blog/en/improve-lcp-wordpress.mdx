@@ -1,0 +1,108 @@
+---
+translationKey: "lcp-wordpress"
+title: "Reducing LCP in WordPress: the right order of work"
+metaTitle: "Reducing LCP in WordPress"
+metaDescription: "A high LCP rarely has one cause. This walks through the order that produces the most improvement for the least change, with code and a measurement method."
+description: "Most speed guides hand you a list of twenty tasks without saying which ones matter. This one orders the work by impact-to-effort ratio."
+publishedAt: 2026-04-12
+updatedAt: 2026-08-02
+tags:
+  - "performance"
+  - "WordPress"
+  - "Core Web Vitals"
+relatedService: "site-speed-optimization"
+relatedPosts:
+  - "slow-woocommerce-queries"
+faq:
+  - q: "Will a cache plugin fix LCP on its own?"
+    a: "Only if your bottleneck is TTFB. If the problem is a large image or a font, caching changes nothing, because those files still have to be downloaded."
+  - q: "What counts as a good LCP?"
+    a: "Under 2.5 seconds for 75 percent of mobile visits. The benchmark is field data, not the Lighthouse number on your laptop."
+  - q: "Why does Lighthouse disagree with my field data?"
+    a: "Lighthouse is a simulation with a synthetic network and CPU. Field data comes from real devices, which are usually slower and on worse connections."
+---
+
+Most "speed up WordPress" guides give you a list of twenty items and leave you to work out where to start. In practice three or four changes produce eighty percent of the improvement and the rest is time you will not get back.
+
+The order I follow is based on impact-to-effort ratio.
+
+## Step zero: find out what the LCP element actually is
+
+Before doing anything you need to know which element the browser considers the LCP. It is almost always one of three: a hero image, the main heading, or an article's featured image.
+
+```js
+// In the browser console, on the page you want to check:
+new PerformanceObserver((list) => {
+  const entry = list.getEntries().at(-1);
+  console.log("LCP:", entry.startTime.toFixed(0), "ms", entry.element);
+}).observe({ type: "largest-contentful-paint", buffered: true });
+```
+
+Skip this and there is a good chance you will optimise an image that is not the LCP element at all.
+
+## 1. If the LCP is an image
+
+The most common case, and the biggest win.
+
+**Correct dimensions.** An image displayed at 800px should not be downloading at 2400px. `srcset` works, provided the smaller variants actually exist.
+
+**Modern format.** AVIF is typically 30 to 50 percent smaller than WebP, and browser support is no longer an issue.
+
+**No lazy loading on the LCP element.** This is a mistake optimisation plugins make constantly: `loading="lazy"` on the hero image, which forces the browser to delay fetching it.
+
+```php
+// In the theme: the above-the-fold featured image is never lazy.
+the_post_thumbnail( 'hero', [
+    'loading'       => 'eager',
+    'fetchpriority' => 'high',
+    'decoding'      => 'async',
+] );
+```
+
+`fetchpriority="high"` tells the browser to fetch this ahead of other resources. On a slow phone that single attribute can be worth several hundred milliseconds.
+
+## 2. Fonts
+
+A web font is commonly 40 to 150 KB, and if the main heading is the LCP element, nothing renders until it arrives.
+
+- Serve fonts **locally**. Every external origin costs a DNS lookup and a TLS handshake.
+- Use `font-display: swap` so text paints in a fallback first.
+- `preload` the primary font — but only that one.
+
+```html
+<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+```
+
+<Callout type="warn" title="Do not over-preload">
+Every preloaded resource takes bandwidth from the others. Three preloaded fonts usually make LCP worse, not better.
+</Callout>
+
+## 3. TTFB
+
+If the server takes 1.5 seconds to send the first byte, no amount of client-side work gets you under 2.5 seconds.
+
+Check in this order: PHP version (8.2+), object cache (Redis or Memcached), queries per request, and only then page cache.
+
+The object cache is usually the cheapest large win. Without one, WordPress repeats dozens of `wp_options` queries on every request.
+
+## 4. Render-blocking JavaScript
+
+Every `<script>` in `<head>` without `defer` or `async` stops HTML parsing.
+
+```php
+add_filter( 'script_loader_tag', function ( string $tag, string $handle ): string {
+    // Scripts not needed for the first render
+    $deferred = [ 'analytics', 'chat-widget', 'carousel' ];
+    return in_array( $handle, $deferred, true )
+        ? str_replace( ' src', ' defer src', $tag )
+        : $tag;
+}, 10, 2 );
+```
+
+## What to leave until last
+
+Minifying CSS, concatenating files and removing unused CSS are all correct things to do, and each is usually worth tens of milliseconds. If your LCP is six seconds, do not start here.
+
+## How to tell whether it worked
+
+Two weeks after the changes, look at field data rather than Lighthouse. Lighthouse on your laptop with good broadband produces a number no visitor experiences. The benchmark is the 75th percentile of real mobile users.

@@ -1,0 +1,36 @@
+{
+  "fa": {
+    "validation": {
+      "nameMin": "نام را وارد کنید.",
+      "nameMax": "نام خیلی بلند است.",
+      "emailInvalid": "ایمیل معتبر وارد کنید.",
+      "subjectMin": "موضوع را کوتاه توضیح دهید.",
+      "messageMin": "لطفاً حداقل چند جمله درباره پروژه بنویسید.",
+      "messageMax": "پیام خیلی بلند است. خلاصه‌اش کنید یا فایل را ایمیل کنید."
+    },
+    "successTitle": "پیام رسید",
+    "successBody": "ممنون. پیام‌تان را دریافت کردم و به‌زودی جواب می‌دهم.",
+    "errorTitle": "ارسال نشد",
+    "errorGeneric": "مشکلی پیش آمد. لطفاً دوباره تلاش کنید یا مستقیم ایمیل بزنید.",
+    "errorRateLimited": "تعداد درخواست‌ها زیاد بود. چند دقیقه دیگر دوباره تلاش کنید.",
+    "back": "برگشت به خانه",
+    "siteName": "علی فاتحی"
+  },
+  "en": {
+    "validation": {
+      "nameMin": "Please enter your name.",
+      "nameMax": "That name is too long.",
+      "emailInvalid": "Please enter a valid email address.",
+      "subjectMin": "Give the subject in a few words.",
+      "messageMin": "Please write at least a couple of sentences about the project.",
+      "messageMax": "That message is too long. Trim it or email the file instead."
+    },
+    "successTitle": "Message received",
+    "successBody": "Thanks. I've got your message and will reply shortly.",
+    "errorTitle": "Not sent",
+    "errorGeneric": "Something went wrong. Please try again or email me directly.",
+    "errorRateLimited": "Too many requests. Try again in a few minutes.",
+    "back": "Back home",
+    "siteName": "Ali Fatehi"
+  }
+}

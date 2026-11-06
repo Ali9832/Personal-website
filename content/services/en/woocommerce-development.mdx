@@ -1,0 +1,77 @@
+---
+translationKey: "woocommerce"
+title: "WooCommerce development"
+metaTitle: "WooCommerce development and store rescue"
+metaDescription: "Building and rescuing WooCommerce stores at scale: query optimisation for large catalogues, payment and shipping integration, and a checkout that stays fast."
+h1: "WooCommerce development"
+navLabel: "WooCommerce"
+primaryKeyword: "WooCommerce development"
+secondaryKeywords:
+  - "WooCommerce developer"
+  - "WooCommerce performance"
+  - "large catalogue WooCommerce"
+summary: "Building, extending and rescuing WooCommerce stores — particularly once the catalogue passes a few thousand products and the site has slowed to a crawl."
+icon: "woocommerce"
+order: 3
+deliverables:
+  - "Store setup or rebuild with a correct product and attribute structure"
+  - "Query optimisation for product listing, filtering and search on large catalogues"
+  - "Payment gateway and shipping integration"
+  - "Customised checkout flow and transactional emails"
+  - "Caching configured to work correctly with cart and account pages"
+  - "Before/after speed report on category, product and checkout pages"
+process:
+  - title: "Audit the catalogue and data"
+    body: "I look at product structure, attributes and metadata first. Most store slowness starts here rather than in the theme."
+  - title: "Implement and optimise"
+    body: "Heavy queries get replaced with indexed or denormalised alternatives, and the purchase flow is reduced to the fewest steps that still collect what you need."
+  - title: "Test a real purchase"
+    body: "Before handover, several complete orders go through with the live gateway — cart, discount, shipping, payment and confirmation email."
+faq:
+  - q: "My store has thousands of products and is very slow. Is it salvageable?"
+    a: "Usually yes, and usually without migrating. Slowness in large stores almost always comes from filter and meta queries rather than from the volume of data itself."
+  - q: "Can you integrate a specific payment gateway?"
+    a: "Yes. Common gateways have official plugins and integration is routine. If yours has no plugin, a custom integration is possible."
+  - q: "Can products be imported from a spreadsheet?"
+    a: "Yes. Bulk import from CSV or Excel, mapping columns to product attributes, is part of a setup engagement."
+  - q: "How do I know caching will not break the cart?"
+    a: "Cart, checkout and account are excluded from page cache, and dynamic fragments such as the cart count are filled by a separate request. That configuration is part of the delivery, not an extra."
+relatedServices:
+  - "site-speed-optimization"
+  - "custom-wordpress-plugin"
+---
+
+## Where WooCommerce stores break
+
+WooCommerce works with almost any configuration up to about a thousand products. After that, three things start to break.
+
+**Product filtering.** Attribute-based filters become queries against `wp_postmeta`. That table gains dozens of rows per product, and without a suitable index a two-condition filter can take seconds.
+
+**Search.** WordPress's default search runs `LIKE %...%`, which cannot use an index at all.
+
+**Uncacheable pages.** Cart, checkout and account are never cached. If your site is only fast because of page caching, those three pages — exactly where revenue happens — are still slow.
+
+## Migration is rarely the answer
+
+The common advice at this point is "move the store to X". That is almost always more expensive and riskier than fixing the problem where it is.
+
+```sql
+-- A composite index matching the store's real query pattern, rather than
+-- relying on the default meta_key index, which was not built for this.
+ALTER TABLE wp_postmeta
+  ADD INDEX meta_key_value_post (meta_key(32), meta_value(32), post_id);
+```
+
+<Callout type="warn" title="Before any structural change">
+On large tables, adding an index can lock the table. This work happens on staging and during a low-traffic window, with a restorable backup.
+</Callout>
+
+For very large catalogues the better answer is usually a flat lookup table holding only the filterable fields, kept in sync through product save hooks. The filter query becomes a single `SELECT` instead of several joins against `postmeta`.
+
+## Checkout is where money leaks
+
+Every extra field in the checkout form costs a percentage of orders. What I typically do:
+
+- Remove fields that are not genuinely needed.
+- Validate postcode and phone on the client so the customer does not bounce back with an error after submitting.
+- Strip unnecessary scripts from the checkout page — it needs neither a slider nor an Instagram widget.

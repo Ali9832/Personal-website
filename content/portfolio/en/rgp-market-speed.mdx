@@ -1,0 +1,67 @@
+---
+translationKey: "rgp-market-speed"
+title: "Measurable speed optimisation for RGP Market"
+metaTitle: "Site speed optimisation case study: RGP Market"
+metaDescription: "Improving RGP Market from 39 to 69 in GTmetrix Performance and reaching 97 in Lighthouse, with major LCP and blocking-time improvements."
+client: "RGP Market"
+clientAnonymous: false
+industry: "E-commerce"
+year: 2026
+service: "site-speed-optimization"
+stack: ["GTmetrix", "Lighthouse", "Core Web Vitals", "Frontend optimisation"]
+cover: "/media/covers/rgp-market.jpg"
+coverAlt: "GTmetrix report for RGP Market after optimisation: 69% Performance, 2.1s LCP"
+problem: "In the initial GTmetrix test on July 4, 2026, the site scored 39% Performance and had a 10.5-second LCP. The goal was to improve loading experience without changing the store's visual identity or core features."
+metrics:
+  - label: "GTmetrix Performance"
+    before: 39
+    after: 69
+    unit: "score"
+    direction: "higher-is-better"
+  - label: "Largest Contentful Paint"
+    before: 10.5
+    after: 2.1
+    unit: "s"
+    direction: "lower-is-better"
+  - label: "Total Blocking Time"
+    before: 368
+    after: 242
+    unit: "ms"
+    direction: "lower-is-better"
+  - label: "Cumulative Layout Shift"
+    before: 0.01
+    after: 0.01
+    unit: "score"
+    direction: "lower-is-better"
+liveUrl: "https://rgp.market/"
+featured: true
+order: 4
+---
+
+## Starting point
+
+The GTmetrix report from **July 4, 2026** showed 39% Performance, 89% Structure and Grade E. The main bottleneck was a **10.5-second LCP**, while CLS was already 0.01.
+
+## Post-optimisation GTmetrix result
+
+In the **August 16, 2026** retest, Performance reached 69%, Structure 88% and Grade C. LCP fell to 2.1 seconds, TBT dropped from 368 to 242 milliseconds, and CLS stayed at 0.01.
+
+## Lighthouse result
+
+The Lighthouse run recorded:
+
+- **Performance:** 97
+- **Accessibility:** 88
+- **Best Practices:** 96
+- **SEO:** 92
+- **FCP:** 0.7s
+- **LCP:** 0.8s
+- **TBT:** 50ms
+- **CLS:** 0.03
+- **Speed Index:** 1.7s
+
+## Summary
+
+This project demonstrates measurement-led optimisation: the baseline was recorded first, then the same tools and metrics were used for comparison. The result can therefore be described with numbers rather than a generic “faster website” claim.
+
+> GTmetrix results depend on the London test server and report settings. Lighthouse can vary by device, network, browser and active extensions; the screenshot itself recommends an extension-free or Incognito run.

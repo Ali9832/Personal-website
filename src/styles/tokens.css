@@ -1,0 +1,143 @@
+/* ---------------------------------------------------------------------------
+   Design tokens. Single source of truth: Tailwind reads these through
+   `@theme inline` in globals.css, so a utility class and a raw var() can never
+   drift apart.
+
+   Neutrals are warm (stone), not pure grey — pure grey next to amber reads as
+   dirty. The accent exists in three tokens because #D97706 on white is 3.1:1,
+   which fails AA for body text: brand colour and brand *text* colour are not
+   the same value.
+--------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  --bg: #fafaf9;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-sunk: #f5f5f4;
+  --border: #e7e5e4;
+  --border-strong: #d6d3d1;
+
+  --text: #1c1917;
+  --text-muted: #57534e;
+  --text-subtle: #78716c;
+  --text-inverse: #fafaf9;
+
+  --accent: #d97706;         /* fills, rules, decorative marks */
+  --accent-strong: #b45309;  /* button background w/ white text -> 4.9:1 AA */
+  --accent-text: #92400e;    /* link text on --surface        -> 6.4:1 AA */
+  --accent-wash: #fef3c7;
+  --accent-border: #fcd34d;
+  --on-accent: #ffffff;
+
+  --positive: #15803d;
+  --negative: #b91c1c;
+
+  --shadow-sm: 0 1px 2px rgb(28 25 23 / 0.05);
+  --shadow-md: 0 4px 16px -4px rgb(28 25 23 / 0.10);
+}
+
+/* System preference, unless the visitor explicitly chose light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg: #0c0a09;
+    --bg-elevated: #1c1917;
+    --surface: #1c1917;
+    --surface-sunk: #161312;
+    --border: #292524;
+    --border-strong: #44403c;
+
+    --text: #fafaf9;
+    --text-muted: #a8a29e;
+    --text-subtle: #78716c;
+    --text-inverse: #1c1917;
+
+    --accent: #f59e0b;
+    --accent-strong: #f59e0b;  /* w/ #1c1917 text -> 9.2:1 AA */
+    --accent-text: #fbbf24;    /* on --bg         -> 11.1:1 AAA */
+    --accent-wash: #292017;
+    --accent-border: #78350f;
+    --on-accent: #1c1917;
+
+    --positive: #4ade80;
+    --negative: #f87171;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 4px 16px -4px rgb(0 0 0 / 0.5);
+  }
+}
+
+/* Explicit choice wins over the system preference. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0c0a09;
+  --bg-elevated: #1c1917;
+  --surface: #1c1917;
+  --surface-sunk: #161312;
+  --border: #292524;
+  --border-strong: #44403c;
+
+  --text: #fafaf9;
+  --text-muted: #a8a29e;
+  --text-subtle: #78716c;
+  --text-inverse: #1c1917;
+
+  --accent: #f59e0b;
+  --accent-strong: #f59e0b;
+  --accent-text: #fbbf24;
+  --accent-wash: #292017;
+  --accent-border: #78350f;
+  --on-accent: #1c1917;
+
+  --positive: #4ade80;
+  --negative: #f87171;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 16px -4px rgb(0 0 0 / 0.5);
+}
+
+:root {
+  /* Type. Persian base is 17px — 16px Vazirmatn reads a notch smaller than
+     16px Inter because of its shorter x-height relative to the em box. */
+  --text-2xs: 0.75rem;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.1875rem;
+  --text-xl: clamp(1.3rem, 1.1rem + 0.9vw, 1.6rem);
+  --text-2xl: clamp(1.6rem, 1.3rem + 1.4vw, 2.1rem);
+  --text-3xl: clamp(2rem, 1.5rem + 2.3vw, 3rem);
+  --text-4xl: clamp(2.4rem, 1.7rem + 3.2vw, 3.75rem);
+
+  --leading-body: 1.85;
+  --leading-relaxed: 2;
+  --leading-heading: 1.4;
+  --leading-tight: 1.2;
+
+  --tracking-tight: -0.01em;
+  --tracking-wide: 0.04em;
+
+  --measure: 68ch;
+  --measure-narrow: 56ch;
+
+  /* Layout */
+  --container: 72rem;
+  --container-narrow: 46rem;
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2rem);
+
+  /* Radius — deliberately small; large radii are the tell of a bought theme. */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 999px;
+
+  /* Motion */
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 320ms;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}

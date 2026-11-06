@@ -1,0 +1,78 @@
+---
+translationKey: "chrome-extension"
+title: "Chrome extension development"
+metaTitle: "Chrome extension development on Manifest V3"
+metaDescription: "Browser extensions on Manifest V3: automating repetitive work in web panels, surfacing data in place, and internal team tooling, packaged for the Web Store."
+h1: "Chrome extension development"
+navLabel: "Chrome extensions"
+primaryKeyword: "Chrome extension development"
+secondaryKeywords:
+  - "browser extension developer"
+  - "Manifest V3"
+  - "browser automation"
+summary: "Browser extensions that automate repetitive work in web panels — for the cases where the target service has no API, or will not give you one."
+icon: "extension"
+order: 6
+deliverables:
+  - "A Chrome extension on Manifest V3, written in TypeScript"
+  - "A popup or side panel interface suited to the task"
+  - "Content scripts for interacting with the target page"
+  - "Settings stored safely through chrome.storage"
+  - "A package ready for the Chrome Web Store or internal enterprise install"
+  - "Installation and update documentation"
+process:
+  - title: "Inspect the target"
+    body: "First I look at how the panel or site is built, and whether a more durable route — an official API — exists."
+  - title: "Build and test against real data"
+    body: "The extension is tested in the environment it will actually run in, not against a mock page."
+  - title: "Package and publish"
+    body: "The final bundle is prepared for public Web Store release or for internal distribution inside your organisation."
+faq:
+  - q: "Can it be for internal company use only?"
+    a: "Yes. An extension can be packaged for internal distribution without ever being published publicly."
+  - q: "Can an extension pull data from other sites?"
+    a: "Technically yes, but I only work on services where you hold a legitimate account and access, and whose terms of use permit it."
+  - q: "What changed in Manifest V3?"
+    a: "The old background page is gone, replaced by a service worker that shuts down when idle. That means the extension cannot hold state in memory and must persist it to storage. It is what broke a lot of older extensions."
+  - q: "Will it work in Firefox?"
+    a: "Usually with small changes. If I know Firefox is a target from the start, I write for both."
+relatedServices:
+  - "nextjs-react-development"
+---
+
+## When an extension is the right answer
+
+A browser extension is the best tool when repetitive work happens inside a web panel, that service has no public API or will not grant you one, and the frequency of repetition justifies automating it.
+
+Real examples: extracting a report from a panel that only renders HTML, auto-filling repetitive forms in an administrative system, or layering extra information onto an existing panel without touching the panel itself.
+
+## The thing Manifest V3 changed
+
+In Manifest V3 the background context is a service worker that shuts down when idle. Anything held in a module-level variable is gone.
+
+```ts
+// Common mistake: state in a module variable.
+// let counter = 0;  ← resets when the worker shuts down.
+
+// Correct: state in storage.
+async function increment(): Promise<number> {
+  const { counter = 0 } = await chrome.storage.local.get("counter");
+  const next = counter + 1;
+  await chrome.storage.local.set({ counter: next });
+  return next;
+}
+```
+
+## Permissions stay minimal
+
+Every extra permission in `manifest.json` is both a security risk and a reason to be rejected in Web Store review. Named domains instead of `<all_urls>`. `activeTab` on click instead of standing access.
+
+```json
+{
+  "manifest_version": 3,
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["https://panel.example.com/*"]
+}
+```
+
+This affects both how quickly review passes and what warning the user sees at install time.

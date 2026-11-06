@@ -1,0 +1,82 @@
+---
+translationKey: "custom-plugin"
+title: "Custom WordPress plugin development"
+metaTitle: "Custom WordPress plugin development"
+metaDescription: "Custom WordPress plugins for requirements no off-the-shelf plugin covers: hooks, filters, REST endpoints and an admin UI, in code you own outright."
+h1: "Custom WordPress plugin development"
+navLabel: "Custom plugins"
+primaryKeyword: "WordPress plugin development"
+secondaryKeywords:
+  - "custom WordPress plugin"
+  - "WordPress developer for hire"
+  - "WooCommerce extension development"
+summary: "For when no off-the-shelf plugin does quite what you need — or one does, but brings ten times the surface area you asked for."
+icon: "plugin"
+order: 4
+deliverables:
+  - "A custom plugin written to the WordPress coding standards"
+  - "A settings screen in the admin built on the Settings API"
+  - "REST endpoints where the data needs to be consumed elsewhere"
+  - "Safe data migration and activation/deactivation routines"
+  - "Technical documentation: the hooks and filters available for future work"
+  - "Full source, unobfuscated, with no licence server"
+process:
+  - title: "Define the scope precisely"
+    body: "First we agree what the plugin does and, more importantly, what it does not. Most custom plugins get heavy because their scope opens up halfway through."
+  - title: "Build on hooks, never on core edits"
+    body: "No core files are touched. Everything goes through official actions and filters so a WordPress update breaks nothing."
+  - title: "Test and document"
+    body: "The plugin is tested across PHP and WordPress versions and ships with a technical README."
+faq:
+  - q: "Why not just buy a plugin?"
+    a: "If an existing plugin does exactly what you need, buy it — I will tell you so and not charge for the conversation. A custom plugin makes sense when nothing exists, or when reaching your requirement means gluing three plugins together."
+  - q: "Do I own the code?"
+    a: "Yes. Full source is delivered, unencrypted, with no licence system and no dependency on any server of mine."
+  - q: "Will a WordPress update break it?"
+    a: "Because it only uses official APIs, that is unlikely. If a WordPress change breaks it directly, I fix it free for six months after delivery."
+  - q: "Can you modify a plugin I already have?"
+    a: "Yes, if its source is open. I do that as a separate companion plugin working through hooks, so updating the original does not wipe the work."
+relatedServices:
+  - "wordpress-development"
+  - "woocommerce-development"
+---
+
+## Signs you need a custom plugin
+
+- You have installed three plugins to do one simple job, each bringing ten features you did not want.
+- Your theme's `functions.php` has grown to a thousand lines and nobody will touch it.
+- The plugin you depend on is unmaintained and was last updated two years ago.
+- Your requirement is specific to your business and no general product exists for it.
+
+## How the code is written
+
+No core edits, no direct modification of other plugins, and hooks exposed so the plugin itself can be extended later:
+
+```php
+<?php
+/**
+ * Plugin Name: Acme Order Router
+ * Requires PHP: 8.1
+ */
+
+declare( strict_types = 1 );
+
+add_action( 'woocommerce_checkout_create_order', 'acme_assign_warehouse', 10, 2 );
+
+function acme_assign_warehouse( WC_Order $order, array $data ): void {
+    $region    = $order->get_shipping_state();
+    $warehouse = acme_pick_warehouse( $region );
+
+    // Public filter: the selection logic can be overridden later
+    // without editing this file.
+    $warehouse = apply_filters( 'acme_selected_warehouse', $warehouse, $order );
+
+    $order->update_meta_data( '_acme_warehouse', $warehouse );
+}
+```
+
+Two things in that short snippet matter: `declare(strict_types=1)`, because PHP's weak typing is a source of silent bugs, and `apply_filters`, because a plugin that cannot be extended gets rewritten in six months.
+
+## Activation and data migration
+
+Most serious plugin failures happen during activation and upgrade. Every plugin I write tracks a schema version and runs migrations step by step and reversibly — not a single `dbDelta` call and a hope.
